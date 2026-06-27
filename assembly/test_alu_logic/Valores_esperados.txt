@@ -1,0 +1,4 @@
+D: 00H
+DF: 1
+R4: 0030H
+Memória [0030H]: AAH
