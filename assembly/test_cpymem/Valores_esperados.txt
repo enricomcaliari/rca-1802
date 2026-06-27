@@ -1,0 +1,6 @@
+D: 00H
+RC: 0000H
+R9: 0064H
+RA: 0074H
+Memória [0060H] até [0063H]: DEH, ADH, BEH, EFH
+Memória [0070H] até [0073H]: DEH, ADH, BEH, EFH

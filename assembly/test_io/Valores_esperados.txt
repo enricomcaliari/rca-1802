@@ -1,0 +1,5 @@
+D: valor lido no barramento IN
+R8: 0050H
+X: 8H
+Q: 0
+Memória [0050H]: é atualizada com o valor recebido no barramento IN

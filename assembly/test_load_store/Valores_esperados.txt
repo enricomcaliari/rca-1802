@@ -1,0 +1,5 @@
+D: AAH
+X: 3H
+R3: 1501H
+Memória [1500H]: 55H
+Memória [1501H]: AAH
