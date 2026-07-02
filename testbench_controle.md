@@ -1,7 +1,7 @@
-# Testbench � Unidade de Controle do RCA CDP1802
-**Grupo 4 � Pessoa 3 | Arquitetura e Organiza��o de Computadores 2026/1**
+﻿# Testbench � Unidade de Controle do RCA CDP1802
+**Grupo 4 — Unidade de Controle + µROM | Arquitetura e Organização de Computadores 2026/1**
 
-Refer�ncias: `RCA_1802_microROM.pdf` (Pessoa 1) � `Mapeamento de Microopera��es.pdf` (Pessoa 2)
+Referências: `RCA_1802_microROM.pdf` — `Mapeamento de Microoperações e Especificação da µROM.pdf`
 
 ---
 
@@ -67,7 +67,7 @@ Refer�ncias: `RCA_1802_microROM.pdf` (Pessoa 1) � `Mapeamento de Microopera�
 | IRX  | 0x07 | 0x60 |
 | OUT  | 0x08 | 0x61�0x67 |
 | IN   | 0x09 | 0x69�0x6F |
-| ... | ... | (ver PDF da Pessoa 1 para lista completa) |
+| ... | ... | (ver documentação do grupo para lista completa) |
 | LDX  | 0x21 | 0xF0 |
 | OR   | 0x22 | 0xF1 |
 | ADD  | 0x25 | 0xF4 |
@@ -302,7 +302,10 @@ Refer�ncias: `RCA_1802_microROM.pdf` (Pessoa 1) � `Mapeamento de Microopera�
 | 0x04e | ADC | ADC | `42859c20` | FETCH |
 | 0x04f | SDB | SDB | `82859c20` | FETCH |
 | 0x050 | SHRC | SHRC | `d2040020` | FETCH |
+| 0x051 | SMB | SMB | `62859c20` | FETCH |
 | 0x052 | SAV | SAV | `1e099a00` | FETCH |
+| 0x053 | MARK | MARK (EX1) | `00000002` | **EXECUTE2** |
+| 0x093 | MARK | MARK (EX2) | `00000000` | FETCH (hw especial) |
 | 0x054 | REQ | REQ | `202c0010` | FETCH |
 | 0x055 | SEQ | SEQ | `20ec0010` | FETCH |
 | 0x056 | ADCI | ADCI | `428494a0` | FETCH |
