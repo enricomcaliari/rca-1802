@@ -54,32 +54,36 @@
     controle.circ - Unidade de Controle Microprogramada RCA CDP1802
     Logisim Evolution 4.0.0
 
-    Porta individual do Splitter (facing=west, fanout=N, spacing=10, bus em loc=(lx,ly)):
-      porta_i: x = lx-20,  y = ly - (N/2)*10 + i*10   (divisao inteira)
+    ADDR_COMBINER: loc=(370,210), facing=west, fanout=2, spacing=1
+      offs = -(2/2)*10 = -10
+      grupo 0 (INSTR_CLASS 6b): x=350, y=200
+      grupo 1 (STATE       3b): x=350, y=210
 
-    ADDR_COMBINER: loc=(370,210), N=2
-      grupo 0 (INSTR_CLASS, 6b): (350, 200)
-      grupo 1 (STATE,       3b): (350, 210)
+    MW_SPLITTER: loc=(720,210), facing=EAST, fanout=15, spacing=1
+      offs = -(15/2)*10 = -70
+      Portas individuais: x=740, y = 140 + grupo*10
+      Barramento (32b):   x=720 (loc)
 
-    MW_SPLITTER: loc=(720,210), N=15
-      grupo  0 (ALU_OP,      4b): (700, 140)
-      grupo  1 (SRC_A,       3b): (700, 150)
-      grupo  2 (SRC_B,       3b): (700, 160)
-      grupo  3 (DST,         4b): (700, 170)
-      grupo  4 (ADDR_SRC,    3b): (700, 180)
-      grupo  5 (REG_SEL_SRC, 4b): (700, 190)
-      grupo  6 (MEM_RD,      1b): (700, 200)
-      grupo  7 (MEM_WR,      1b): (700, 210)
-      grupo  8 (IR_LOAD,     1b): (700, 220)
-      grupo  9 (REG_INC,     1b): (700, 230)
-      grupo 10 (REG_DEC,     1b): (700, 240)
-      grupo 11 (DF_LOAD,     1b): (700, 250)
-      grupo 12 (Q_LOAD,      1b): (700, 260)
-      grupo 13 (COND_EN,     1b): (700, 270)
-      grupo 14 (NEXT_STATE,  3b): (700, 280)
+      facing=east evita T-junction entre barramento(720,210) e grupo7(740,210):
+        - barramento chega de (550,210)->(720,210): x=550-720
+        - grupo 7 (MEM_WR): x=740-900
+        - gap de 20px = corpo do componente; sem sobreposicao
 
-    Barramento ROM->MW_SPLITTER roteado via y=130 para evitar T-junction
-    de 32b no ponto (700,210) do grupo 7 (MEM_WR).
+      grupo  0 (ALU_OP      4b): (740,140)
+      grupo  1 (SRC_A       3b): (740,150)
+      grupo  2 (SRC_B       3b): (740,160)
+      grupo  3 (DST         4b): (740,170)
+      grupo  4 (ADDR_SRC    3b): (740,180)
+      grupo  5 (REG_SEL_SRC 4b): (740,190)
+      grupo  6 (MEM_RD      1b): (740,200)
+      grupo  7 (MEM_WR      1b): (740,210)
+      grupo  8 (IR_LOAD     1b): (740,220)
+      grupo  9 (REG_INC     1b): (740,230)
+      grupo 10 (REG_DEC     1b): (740,240)
+      grupo 11 (DF_LOAD     1b): (740,250)
+      grupo 12 (Q_LOAD      1b): (740,260)
+      grupo 13 (COND_EN     1b): (740,270)
+      grupo 14 (NEXT_STATE  3b): (740,280)
   -->
 
   <circuit name="controle">
@@ -141,7 +145,7 @@
       <a name="label" val="REG_ESTADO"/>
     </comp>
 
-    <!-- COMBINADOR DE ENDERECO: ADDR[8:0] = { STATE[2:0], INSTR_CLASS[5:0] } -->
+    <!-- ADDR_COMBINER: ADDR[8:0] = { STATE[2:0], INSTR_CLASS[5:0] } -->
     <comp lib="0" loc="(370,210)" name="Splitter">
       <a name="facing" val="west"/>
       <a name="incoming" val="9"/>
@@ -165,9 +169,9 @@
       <a name="label" val="uROM"/>
     </comp>
 
-    <!-- SPLITTER DE SAIDA: decompoe micropalavra 32b em 15 sinais de controle -->
+    <!-- MW_SPLITTER: facing=east, barramento em x=720, portas em x=740 -->
     <comp lib="0" loc="(720,210)" name="Splitter">
-      <a name="facing" val="west"/>
+      <a name="facing" val="east"/>
       <a name="incoming" val="32"/>
       <a name="fanout" val="15"/>
       <a name="bit0"  val="14"/>
@@ -334,10 +338,8 @@
     <!-- ADDR_COMBINER bus -> ROM endereco -->
     <wire from="(370,210)" to="(480,210)"/>
 
-    <!-- ROM dados -> MW_SPLITTER bus (via y=130, evita T-junction no grupo 7) -->
-    <wire from="(550,210)" to="(550,130)"/>
-    <wire from="(550,130)" to="(720,130)"/>
-    <wire from="(720,130)" to="(720,210)"/>
+    <!-- ROM dados -> MW_SPLITTER barramento (direto; barramento=720, portas=740, sem conflito) -->
+    <wire from="(550,210)" to="(720,210)"/>
 
     <!-- CLK -> REG_ESTADO CK -->
     <wire from="(30,300)" to="(180,300)"/>
@@ -347,27 +349,27 @@
     <wire from="(170,340)" to="(170,290)"/>
     <wire from="(170,290)" to="(200,290)"/>
 
-    <!-- MW_SPLITTER saidas -> pinos (y = 140 + grupo*10) -->
-    <wire from="(700,140)" to="(900,140)"/>
-    <wire from="(700,150)" to="(900,150)"/>
-    <wire from="(700,160)" to="(900,160)"/>
-    <wire from="(700,170)" to="(900,170)"/>
-    <wire from="(700,180)" to="(900,180)"/>
-    <wire from="(700,190)" to="(900,190)"/>
-    <wire from="(700,200)" to="(900,200)"/>
-    <wire from="(700,210)" to="(900,210)"/>
-    <wire from="(700,220)" to="(900,220)"/>
-    <wire from="(700,230)" to="(900,230)"/>
-    <wire from="(700,240)" to="(900,240)"/>
-    <wire from="(700,250)" to="(900,250)"/>
-    <wire from="(700,260)" to="(900,260)"/>
-    <wire from="(700,270)" to="(900,270)"/>
-    <wire from="(700,280)" to="(900,280)"/>
+    <!-- MW_SPLITTER saidas -> pinos (facing=east: portas em x=740, y=140+grupo*10) -->
+    <wire from="(740,140)" to="(900,140)"/>
+    <wire from="(740,150)" to="(900,150)"/>
+    <wire from="(740,160)" to="(900,160)"/>
+    <wire from="(740,170)" to="(900,170)"/>
+    <wire from="(740,180)" to="(900,180)"/>
+    <wire from="(740,190)" to="(900,190)"/>
+    <wire from="(740,200)" to="(900,200)"/>
+    <wire from="(740,210)" to="(900,210)"/>
+    <wire from="(740,220)" to="(900,220)"/>
+    <wire from="(740,230)" to="(900,230)"/>
+    <wire from="(740,240)" to="(900,240)"/>
+    <wire from="(740,250)" to="(900,250)"/>
+    <wire from="(740,260)" to="(900,260)"/>
+    <wire from="(740,270)" to="(900,270)"/>
+    <wire from="(740,280)" to="(900,280)"/>
 
-    <!-- NEXT_STATE realimentacao: (700,280) -> REG_ESTADO.D (180,310) -->
-    <wire from="(700,280)" to="(700,350)"/>
-    <wire from="(700,350)" to="(165,350)"/>
-    <wire from="(165,350)" to="(165,310)"/>
+    <!-- NEXT_STATE realimentacao: (740,280) -> REG_ESTADO.D (180,310) -->
+    <wire from="(740,280)" to="(740,360)"/>
+    <wire from="(740,360)" to="(165,360)"/>
+    <wire from="(165,360)" to="(165,310)"/>
     <wire from="(165,310)" to="(180,310)"/>
 
     <!-- Estado Q -> ESTADO_OUT -->
