@@ -50,140 +50,144 @@
     <sep/>
   </toolbar>
 
-  <!--
-    controle.circ - Unidade de Controle Microprogramada RCA CDP1802
-    Logisim-evolution 4.0.0
-
-    ================================================================
-    POSICOES DAS PORTAS - extraidas do codigo-fonte do Logisim v4.0.0
-    (Register.java, updatePorts(), APPEAR_EVOLUTION)
-    ================================================================
-
-    Register EVOLUTION loc=(X,Y), bounds=(0,0,60,90):
-      Q   (OUT) = (X+60, Y+30)
-      D   (IN)  = (X+0,  Y+30)
-      CK        = (X+0,  Y+70)
-      CLR       = (X+30, Y+90)
-      EN        = (X+0,  Y+50)   <- nao conectado (escreve sempre)
-
-    Register loc=(400,370):
-      Q   = (460, 400)
-      D   = (400, 400)
-      CK  = (400, 440)
-      CLR = (430, 460)
-      EN  = (400, 420)  <- nao conectado
-
-    Splitter facing=west, formula v4.0.0:  y_i = loc_y + (i+1)*10
-    ================================================================
-
-    ADDR_COMBINER loc=(650,350), facing=west, fanout=2, incoming=9:
-      grupo 0 (STATE    3b, bits 6-8): porta em (630, 360)
-      grupo 1 (INSTR    6b, bits 0-5): porta em (630, 370)
-      tronco (9b): (650,350) -> ROM addr (760,350)
-
-    MW_SPLITTER loc=(1020,350), facing=west, fanout=15, incoming=32:
-      grupo  0 (NEXT_STATE  3b, bits  0-2):  (1000, 360)
-      grupo  1 (COND_EN     1b, bit   3):    (1000, 370)
-      grupo  2 (Q_LOAD      1b, bit   4):    (1000, 380)
-      grupo  3 (DF_LOAD     1b, bit   5):    (1000, 390)
-      grupo  4 (REG_DEC     1b, bit   6):    (1000, 400)
-      grupo  5 (REG_INC     1b, bit   7):    (1000, 410)
-      grupo  6 (IR_LOAD     1b, bit   8):    (1000, 420)
-      grupo  7 (MEM_WR      1b, bit   9):    (1000, 430)
-      grupo  8 (MEM_RD      1b, bit  10):    (1000, 440)
-      grupo  9 (REG_SEL_SRC 4b, bits 11-14): (1000, 450)
-      grupo 10 (ADDR_SRC    3b, bits 15-17): (1000, 460)
-      grupo 11 (DST         4b, bits 18-21): (1000, 470)
-      grupo 12 (SRC_B       3b, bits 22-24): (1000, 480)
-      grupo 13 (SRC_A       3b, bits 25-27): (1000, 490)
-      grupo 14 (ALU_OP      4b, bits 28-31): (1000, 500)
-      tronco (32b): (1020,350) <- ROM data (830,350)
-
-    ROM loc=(790,350):
-      Addr = (760,350)  <- tronco ADDR_COMBINER
-      Data = (830,350)  -> tronco MW_SPLITTER
-  -->
-
   <circuit name="controle">
     <a name="appearance" val="logisim_evolution"/>
 
-    <!-- ============================================================
-         PINOS DE ENTRADA
-         ============================================================ -->
+    <!--
+    ====================================================================
+    MAPA POSICIONAL - Logisim Evolution 4.0.0
+    ====================================================================
 
-    <comp lib="0" loc="(100,200)" name="Pin">
+    Fluxo esquerda para direita:
+      ENTRADAS (x=300) -> REG_ESTADO (x=500) -> ADDR_COMBINER (x=800)
+        -> uROM (x=940) -> MW_SPLITTER (x=1200) -> SAIDAS (x=1400)
+
+    Register EVOLUTION loc=(500,350), bounds=(500,350)-(560,440):
+      Q   = (560, 380)   porta de saida do estado atual
+      D   = (500, 380)   porta de entrada do proximo estado
+      CK  = (500, 420)   clock
+      CLR = (530, 440)   reset assincrono
+      EN  = (500, 400)   nao conectado (escreve sempre)
+
+    Splitter formula v4.0.0:  y_grupo_i = loc_y + (i+1)*10
+
+    ADDR_COMBINER loc=(800,350), facing=west, fanout=2:
+      grupo 0 (STATE    3b, bits 6-8): porta (780, 360)
+      grupo 1 (INSTR    6b, bits 0-5): porta (780, 370)
+      tronco 9b: (800,350) -> ROM addr (910,350)
+
+    uROM loc=(940,350):
+      Addr = (910, 350)
+      Data = (980, 350)
+
+    MW_SPLITTER loc=(1200,350), facing=west, fanout=15:
+      grupo  0 (NEXT_STATE  3b, bits  0-2):  porta (1180, 360)
+      grupo  1 (COND_EN     1b, bit   3  ):  porta (1180, 370)
+      grupo  2 (Q_LOAD      1b, bit   4  ):  porta (1180, 380)
+      grupo  3 (DF_LOAD     1b, bit   5  ):  porta (1180, 390)
+      grupo  4 (REG_DEC     1b, bit   6  ):  porta (1180, 400)
+      grupo  5 (REG_INC     1b, bit   7  ):  porta (1180, 410)
+      grupo  6 (IR_LOAD     1b, bit   8  ):  porta (1180, 420)
+      grupo  7 (MEM_WR      1b, bit   9  ):  porta (1180, 430)
+      grupo  8 (MEM_RD      1b, bit  10  ):  porta (1180, 440)
+      grupo  9 (REG_SEL_SRC 4b, bits 11-14): porta (1180, 450)
+      grupo 10 (ADDR_SRC    3b, bits 15-17): porta (1180, 460)
+      grupo 11 (DST         4b, bits 18-21): porta (1180, 470)
+      grupo 12 (SRC_B       3b, bits 22-24): porta (1180, 480)
+      grupo 13 (SRC_A       3b, bits 25-27): porta (1180, 490)
+      grupo 14 (ALU_OP      4b, bits 28-31): porta (1180, 500)
+      tronco 32b: (1200,350) <- ROM data (980,350)
+
+    FIOS PRINCIPAIS (todos em multiplos de 10):
+      INSTR_CLASS: (300,250)->(750,250)->(750,370)->(780,370)
+      STATE(Q->ADDR): (560,380)->(560,360)->(780,360)
+      ADDR -> ROM: (800,350)->(910,350)
+      ROM  -> SPLIT: (980,350)->(1200,350)
+      CLK  -> CK: (300,420)->(500,420)
+      RESET -> CLR: (300,460)->(460,460)->(460,440)->(530,440)
+      NEXT_STATE feedback: (1180,360)->(1180,330)->(490,330)->(490,380)->(500,380)
+      ESTADO_OUT: (560,380)->(560,550)->(1400,550)
+
+    Cruzamentos interiores (sem juncao):
+      (750,360): INSTR_CLASS vertical(6b) x STATE horizontal(3b)
+      (750,330): INSTR_CLASS vertical(6b) x feedback horizontal(3b)
+    ====================================================================
+    -->
+
+    <!-- PINOS DE ENTRADA -->
+
+    <comp lib="0" loc="(300,250)" name="Pin">
       <a name="output" val="false"/>
       <a name="width" val="6"/>
       <a name="label" val="INSTR_CLASS[5:0]"/>
       <a name="facing" val="east"/>
     </comp>
 
-    <comp lib="0" loc="(100,440)" name="Pin">
+    <comp lib="0" loc="(300,420)" name="Pin">
       <a name="output" val="false"/>
       <a name="width" val="1"/>
       <a name="label" val="CLK"/>
       <a name="facing" val="east"/>
     </comp>
 
-    <comp lib="0" loc="(100,480)" name="Pin">
+    <comp lib="0" loc="(300,460)" name="Pin">
       <a name="output" val="false"/>
       <a name="width" val="1"/>
       <a name="label" val="RESET"/>
       <a name="facing" val="east"/>
     </comp>
 
-    <comp lib="0" loc="(100,540)" name="Pin">
+    <comp lib="0" loc="(300,520)" name="Pin">
       <a name="output" val="false"/>
       <a name="width" val="1"/>
       <a name="label" val="DF"/>
       <a name="facing" val="east"/>
     </comp>
 
-    <comp lib="0" loc="(100,570)" name="Pin">
+    <comp lib="0" loc="(300,550)" name="Pin">
       <a name="output" val="false"/>
       <a name="width" val="1"/>
       <a name="label" val="Q_IN"/>
       <a name="facing" val="east"/>
     </comp>
 
-    <comp lib="0" loc="(100,600)" name="Pin">
+    <comp lib="0" loc="(300,580)" name="Pin">
       <a name="output" val="false"/>
       <a name="width" val="4"/>
       <a name="label" val="EF[3:0]"/>
       <a name="facing" val="east"/>
     </comp>
 
-    <comp lib="0" loc="(100,630)" name="Pin">
+    <comp lib="0" loc="(300,610)" name="Pin">
       <a name="output" val="false"/>
       <a name="width" val="1"/>
       <a name="label" val="D_ZERO"/>
       <a name="facing" val="east"/>
     </comp>
 
-    <!-- ============================================================
-         REG_ESTADO - Register 3 bits, EVOLUTION appearance (padrao)
-         loc=(400,370), bounds=(400,370)-(460,460)
-
-         Portas (codigo-fonte Register.java v4.0.0, APPEAR_EVOLUTION):
-           Q   = loc+(60,30) = (460, 400)
-           D   = loc+(0, 30) = (400, 400)
-           CK  = loc+(0, 70) = (400, 440)
-           CLR = loc+(30,90) = (430, 460)
-           EN  = loc+(0, 50) = (400, 420)  (nao conectado) nao conectado
-         ============================================================ -->
-    <comp lib="4" loc="(400,370)" name="Register">
+    <!--
+    REG_ESTADO - Register 3b, EVOLUTION appearance (padrao v4.0.0)
+    loc=(500,350), bounds=(500,350)-(560,440)
+    Portas (Register.java v4.0.0 APPEAR_EVOLUTION):
+      Q   = (560,380)  [loc+(60,30)]
+      D   = (500,380)  [loc+( 0,30)]
+      CK  = (500,420)  [loc+( 0,70)]
+      CLR = (530,440)  [loc+(30,90)]
+      EN  = (500,400)  [loc+( 0,50)] nao conectado
+    -->
+    <comp lib="4" loc="(500,350)" name="Register">
       <a name="width" val="3"/>
       <a name="label" val="REG_ESTADO"/>
     </comp>
 
-    <!-- ============================================================
-         ADDR_COMBINER: ADDR[8:0] = { STATE[2:0], INSTR_CLASS[5:0] }
-         Splitter facing=west, loc=(650,350), fanout=2, incoming=9
-         v4.0.0: grupo i em y = 350+(i+1)*10
-           grupo 0 (bits 6-8 = STATE  3b): y=360 -> (630,360)
-           grupo 1 (bits 0-5 = INSTR  6b): y=370 -> (630,370)
-         ============================================================ -->
-    <comp lib="0" loc="(650,350)" name="Splitter">
+    <!--
+    ADDR_COMBINER: ADDR[8:0] = {STATE[2:0], INSTR_CLASS[5:0]}
+    Splitter facing=west, loc=(800,350), fanout=2, incoming=9
+    v4.0.0: grupo 0 em y=360, grupo 1 em y=370
+      bit6-8 -> grupo 0 (STATE  3b): porta (780,360)
+      bit0-5 -> grupo 1 (INSTR  6b): porta (780,370)
+    -->
+    <comp lib="0" loc="(800,350)" name="Splitter">
       <a name="facing" val="west"/>
       <a name="incoming" val="9"/>
       <a name="fanout" val="2"/>
@@ -199,37 +203,23 @@
       <a name="label" val="ADDR_COMBINER"/>
     </comp>
 
-    <!-- ============================================================
-         uROM - ROM 512 x 32 bits  (botao direito -> Load -> uROM.mem)
-         loc=(790,350): Addr=(760,350)  Data=(830,350)
-         ============================================================ -->
-    <comp lib="4" loc="(790,350)" name="ROM">
+    <!--
+    uROM - ROM 512x32b (botao direito -> Load Image -> uROM.mem)
+    loc=(940,350): Addr=(910,350)  Data=(980,350)
+    -->
+    <comp lib="4" loc="(940,350)" name="ROM">
       <a name="addrWidth" val="9"/>
       <a name="dataWidth" val="32"/>
       <a name="label" val="uROM"/>
     </comp>
 
-    <!-- ============================================================
-         MW_SPLITTER: decompoe micropalavra 32 bits
-         Splitter facing=west, loc=(1020,350), fanout=15, incoming=32
-         v4.0.0: grupo i em y = 350+(i+1)*10
-           g0  NEXT_STATE  3b (bits  0-2):  (1000,360)
-           g1  COND_EN     1b (bit   3):    (1000,370)
-           g2  Q_LOAD      1b (bit   4):    (1000,380)
-           g3  DF_LOAD     1b (bit   5):    (1000,390)
-           g4  REG_DEC     1b (bit   6):    (1000,400)
-           g5  REG_INC     1b (bit   7):    (1000,410)
-           g6  IR_LOAD     1b (bit   8):    (1000,420)
-           g7  MEM_WR      1b (bit   9):    (1000,430)
-           g8  MEM_RD      1b (bit  10):    (1000,440)
-           g9  REG_SEL_SRC 4b (bits 11-14): (1000,450)
-           g10 ADDR_SRC    3b (bits 15-17): (1000,460)
-           g11 DST         4b (bits 18-21): (1000,470)
-           g12 SRC_B       3b (bits 22-24): (1000,480)
-           g13 SRC_A       3b (bits 25-27): (1000,490)
-           g14 ALU_OP      4b (bits 28-31): (1000,500)
-         ============================================================ -->
-    <comp lib="0" loc="(1020,350)" name="Splitter">
+    <!--
+    MW_SPLITTER: decompoe micropalavra 32b nos 15 sinais de controle
+    Splitter facing=west, loc=(1200,350), fanout=15, incoming=32
+    v4.0.0: grupo i em y = 350+(i+1)*10
+    bit-assignments INVERTIDOS para v4.0.0 (grupo 0=NEXT_STATE, grupo 14=ALU_OP)
+    -->
+    <comp lib="0" loc="(1200,350)" name="Splitter">
       <a name="facing" val="west"/>
       <a name="incoming" val="32"/>
       <a name="fanout" val="15"/>
@@ -268,208 +258,180 @@
       <a name="label" val="MW_SPLITTER"/>
     </comp>
 
-    <!-- ============================================================
-         PINOS DE SAIDA - alinhados com portas MW_SPLITTER
-         x=1200, y = 350+(grupo+1)*10
-         ============================================================ -->
+    <!-- PINOS DE SAIDA x=1400, y=350+(grupo+1)*10 -->
 
-    <comp lib="0" loc="(1200,360)" name="Pin">
+    <comp lib="0" loc="(1400,360)" name="Pin">
       <a name="output" val="true"/>
       <a name="width" val="3"/>
       <a name="label" val="NEXT_STATE[2:0]"/>
       <a name="facing" val="east"/>
     </comp>
 
-    <comp lib="0" loc="(1200,370)" name="Pin">
+    <comp lib="0" loc="(1400,370)" name="Pin">
       <a name="output" val="true"/>
       <a name="width" val="1"/>
       <a name="label" val="COND_EN"/>
       <a name="facing" val="east"/>
     </comp>
 
-    <comp lib="0" loc="(1200,380)" name="Pin">
+    <comp lib="0" loc="(1400,380)" name="Pin">
       <a name="output" val="true"/>
       <a name="width" val="1"/>
       <a name="label" val="Q_LOAD"/>
       <a name="facing" val="east"/>
     </comp>
 
-    <comp lib="0" loc="(1200,390)" name="Pin">
+    <comp lib="0" loc="(1400,390)" name="Pin">
       <a name="output" val="true"/>
       <a name="width" val="1"/>
       <a name="label" val="DF_LOAD"/>
       <a name="facing" val="east"/>
     </comp>
 
-    <comp lib="0" loc="(1200,400)" name="Pin">
+    <comp lib="0" loc="(1400,400)" name="Pin">
       <a name="output" val="true"/>
       <a name="width" val="1"/>
       <a name="label" val="REG_DEC"/>
       <a name="facing" val="east"/>
     </comp>
 
-    <comp lib="0" loc="(1200,410)" name="Pin">
+    <comp lib="0" loc="(1400,410)" name="Pin">
       <a name="output" val="true"/>
       <a name="width" val="1"/>
       <a name="label" val="REG_INC"/>
       <a name="facing" val="east"/>
     </comp>
 
-    <comp lib="0" loc="(1200,420)" name="Pin">
+    <comp lib="0" loc="(1400,420)" name="Pin">
       <a name="output" val="true"/>
       <a name="width" val="1"/>
       <a name="label" val="IR_LOAD"/>
       <a name="facing" val="east"/>
     </comp>
 
-    <comp lib="0" loc="(1200,430)" name="Pin">
+    <comp lib="0" loc="(1400,430)" name="Pin">
       <a name="output" val="true"/>
       <a name="width" val="1"/>
       <a name="label" val="MEM_WR"/>
       <a name="facing" val="east"/>
     </comp>
 
-    <comp lib="0" loc="(1200,440)" name="Pin">
+    <comp lib="0" loc="(1400,440)" name="Pin">
       <a name="output" val="true"/>
       <a name="width" val="1"/>
       <a name="label" val="MEM_RD"/>
       <a name="facing" val="east"/>
     </comp>
 
-    <comp lib="0" loc="(1200,450)" name="Pin">
+    <comp lib="0" loc="(1400,450)" name="Pin">
       <a name="output" val="true"/>
       <a name="width" val="4"/>
       <a name="label" val="REG_SEL_SRC[3:0]"/>
       <a name="facing" val="east"/>
     </comp>
 
-    <comp lib="0" loc="(1200,460)" name="Pin">
+    <comp lib="0" loc="(1400,460)" name="Pin">
       <a name="output" val="true"/>
       <a name="width" val="3"/>
       <a name="label" val="ADDR_SRC[2:0]"/>
       <a name="facing" val="east"/>
     </comp>
 
-    <comp lib="0" loc="(1200,470)" name="Pin">
+    <comp lib="0" loc="(1400,470)" name="Pin">
       <a name="output" val="true"/>
       <a name="width" val="4"/>
       <a name="label" val="DST[3:0]"/>
       <a name="facing" val="east"/>
     </comp>
 
-    <comp lib="0" loc="(1200,480)" name="Pin">
+    <comp lib="0" loc="(1400,480)" name="Pin">
       <a name="output" val="true"/>
       <a name="width" val="3"/>
       <a name="label" val="SRC_B[2:0]"/>
       <a name="facing" val="east"/>
     </comp>
 
-    <comp lib="0" loc="(1200,490)" name="Pin">
+    <comp lib="0" loc="(1400,490)" name="Pin">
       <a name="output" val="true"/>
       <a name="width" val="3"/>
       <a name="label" val="SRC_A[2:0]"/>
       <a name="facing" val="east"/>
     </comp>
 
-    <comp lib="0" loc="(1200,500)" name="Pin">
+    <comp lib="0" loc="(1400,500)" name="Pin">
       <a name="output" val="true"/>
       <a name="width" val="4"/>
       <a name="label" val="ALU_OP[3:0]"/>
       <a name="facing" val="east"/>
     </comp>
 
-    <comp lib="0" loc="(1200,540)" name="Pin">
+    <comp lib="0" loc="(1400,550)" name="Pin">
       <a name="output" val="true"/>
       <a name="width" val="3"/>
       <a name="label" val="ESTADO_OUT[2:0]"/>
       <a name="facing" val="east"/>
     </comp>
 
-    <!-- ============================================================
-         FIOS
-         ============================================================ -->
+    <!-- FIOS -->
+
+    <!-- INSTR_CLASS -> ADDR_COMBINER grupo 1 (780,370) -->
+    <wire from="(300,250)" to="(750,250)"/>
+    <wire from="(750,250)" to="(750,370)"/>
+    <wire from="(750,370)" to="(780,370)"/>
+
+    <!-- REG_ESTADO Q (560,380) -> ADDR_COMBINER grupo 0 (780,360) -->
+    <wire from="(560,380)" to="(560,360)"/>
+    <wire from="(560,360)" to="(780,360)"/>
+
+    <!-- ADDR_COMBINER tronco -> uROM addr -->
+    <wire from="(800,350)" to="(910,350)"/>
+
+    <!-- uROM data -> MW_SPLITTER tronco -->
+    <wire from="(980,350)" to="(1200,350)"/>
+
+    <!-- CLK -> REG_ESTADO CK (500,420) -->
+    <wire from="(300,420)" to="(500,420)"/>
+
+    <!-- RESET -> REG_ESTADO CLR (530,440) -->
+    <wire from="(300,460)" to="(460,460)"/>
+    <wire from="(460,460)" to="(460,440)"/>
+    <wire from="(460,440)" to="(530,440)"/>
+
+    <!-- MW_SPLITTER saidas -> pinos -->
+    <wire from="(1180,360)" to="(1400,360)"/>
+    <wire from="(1180,370)" to="(1400,370)"/>
+    <wire from="(1180,380)" to="(1400,380)"/>
+    <wire from="(1180,390)" to="(1400,390)"/>
+    <wire from="(1180,400)" to="(1400,400)"/>
+    <wire from="(1180,410)" to="(1400,410)"/>
+    <wire from="(1180,420)" to="(1400,420)"/>
+    <wire from="(1180,430)" to="(1400,430)"/>
+    <wire from="(1180,440)" to="(1400,440)"/>
+    <wire from="(1180,450)" to="(1400,450)"/>
+    <wire from="(1180,460)" to="(1400,460)"/>
+    <wire from="(1180,470)" to="(1400,470)"/>
+    <wire from="(1180,480)" to="(1400,480)"/>
+    <wire from="(1180,490)" to="(1400,490)"/>
+    <wire from="(1180,500)" to="(1400,500)"/>
 
     <!--
-      INSTR_CLASS[5:0] -> ADDR_COMBINER grupo 1 (630,370)
-      Rota: vai direita ate x=580, desce ate y=370, vai direita ate x=630
+    NEXT_STATE realimentacao: MW_SPLITTER g0 (1180,360) -> REG_ESTADO D (500,380)
+    Rota: sobe y=330, vai ate x=490, desce y=380, entra em D pela esquerda.
+    T-juncao em (1180,360) com fio de saida NEXT_STATE (ambos 3b).
+    Cruzamentos interiores em y=330: INSTR_CLASS(6b) em x=750 (sem juncao).
     -->
-    <wire from="(100,200)" to="(580,200)"/>
-    <wire from="(580,200)" to="(580,370)"/>
-    <wire from="(580,370)" to="(630,370)"/>
+    <wire from="(1180,360)" to="(1180,330)"/>
+    <wire from="(1180,330)" to="(490,330)"/>
+    <wire from="(490,330)" to="(490,380)"/>
+    <wire from="(490,380)" to="(500,380)"/>
 
     <!--
-      REG_ESTADO Q (460,400) -> ADDR_COMBINER grupo 0 (630,360)
-      Rota: sobe de y=400 a y=360, vai direita ate x=630
-      T-juncao em (460,400) com ESTADO_OUT (ambos 3b)
+    ESTADO_OUT: REG_ESTADO Q (560,380) -> pino ESTADO_OUT (1400,550)
+    T-juncao em (560,380) com fio STATE (ambos 3b).
+    Nao passa por nenhuma porta do Register.
     -->
-    <wire from="(460,400)" to="(460,360)"/>
-    <wire from="(460,360)" to="(630,360)"/>
-
-    <!--
-      ADDR_COMBINER tronco (9b) -> uROM endereco
-    -->
-    <wire from="(650,350)" to="(760,350)"/>
-
-    <!--
-      uROM dados (32b) -> MW_SPLITTER tronco
-    -->
-    <wire from="(830,350)" to="(1020,350)"/>
-
-    <!--
-      CLK -> REG_ESTADO CK (400,440)
-    -->
-    <wire from="(100,440)" to="(400,440)"/>
-
-    <!--
-      RESET -> REG_ESTADO CLR (430,460)
-      Rota: vai direita ate x=250, sobe de y=480 a y=460, vai direita ate x=430
-    -->
-    <wire from="(100,480)" to="(250,480)"/>
-    <wire from="(250,480)" to="(250,460)"/>
-    <wire from="(250,460)" to="(430,460)"/>
-
-    <!--
-      MW_SPLITTER saidas -> pinos de saida
-      x=1000 -> x=1200 (grupo i em y=350+(i+1)*10)
-    -->
-    <wire from="(1000,360)" to="(1200,360)"/>
-    <wire from="(1000,370)" to="(1200,370)"/>
-    <wire from="(1000,380)" to="(1200,380)"/>
-    <wire from="(1000,390)" to="(1200,390)"/>
-    <wire from="(1000,400)" to="(1200,400)"/>
-    <wire from="(1000,410)" to="(1200,410)"/>
-    <wire from="(1000,420)" to="(1200,420)"/>
-    <wire from="(1000,430)" to="(1200,430)"/>
-    <wire from="(1000,440)" to="(1200,440)"/>
-    <wire from="(1000,450)" to="(1200,450)"/>
-    <wire from="(1000,460)" to="(1200,460)"/>
-    <wire from="(1000,470)" to="(1200,470)"/>
-    <wire from="(1000,480)" to="(1200,480)"/>
-    <wire from="(1000,490)" to="(1200,490)"/>
-    <wire from="(1000,500)" to="(1200,500)"/>
-
-    <!--
-      NEXT_STATE realimentacao: MW_SPLITTER g0 (1000,360) -> REG_ESTADO D (400,400)
-      Rota: sobe a y=340 (acima do tronco em y=350),
-            vai esquerda ate x=395 (a esquerda de D em x=400),
-            desce a y=400 (nivel de D),
-            vai direita ate D (400,400).
-      T-juncao em (1000,360) com fio de saida NEXT_STATE (ambos 3b).
-      Cruzamento interior em (580,340): INSTR_CLASS 6b x feedback 3b (sem juncao).
-    -->
-    <wire from="(1000,360)" to="(1000,340)"/>
-    <wire from="(1000,340)" to="(395,340)"/>
-    <wire from="(395,340)" to="(395,400)"/>
-    <wire from="(395,400)" to="(400,400)"/>
-
-    <!--
-      ESTADO_OUT: REG_ESTADO Q (460,400) -> pino ESTADO_OUT (1200,540)
-      T-juncao em (460,400) com fio STATE (ambos 3b).
-      Nao ha portas Register em x=460 no range y=[400,540] (CLR esta em 430,460 != x=460).
-    -->
-    <wire from="(460,400)" to="(460,540)"/>
-    <wire from="(460,540)" to="(1200,540)"/>
+    <wire from="(560,380)" to="(560,550)"/>
+    <wire from="(560,550)" to="(1400,550)"/>
 
   </circuit>
 </project>
-
