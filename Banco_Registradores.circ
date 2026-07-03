@@ -18,7 +18,7 @@
   <lib desc="#BFH-Praktika" name="9"/>
   <lib desc="#Input/Output-Extra" name="10"/>
   <lib desc="#Soc" name="11"/>
-  <main name="main"/>
+  <main name="Banco"/>
   <options>
     <a name="gateUndefined" val="ignore"/>
     <a name="simlimit" val="1000"/>
@@ -51,9 +51,9 @@
     <tool lib="4" name="D Flip-Flop"/>
     <tool lib="4" name="Register"/>
   </toolbar>
-  <circuit name="main">
+  <circuit name="Banco">
     <a name="appearance" val="logisim_evolution"/>
-    <a name="circuit" val="main"/>
+    <a name="circuit" val="Banco"/>
     <a name="circuitnamedboxfixedsize" val="true"/>
     <a name="simulationFrequency" val="1.0"/>
     <comp lib="0" loc="(1060,250)" name="Tunnel">
@@ -505,7 +505,7 @@
       <a name="label" val="R15o"/>
       <a name="width" val="16"/>
     </comp>
-    <comp lib="0" loc="(320,230)" name="Pin">
+    <comp lib="0" loc="(330,230)" name="Pin">
       <a name="appearance" val="NewPins"/>
       <a name="label" val="WriteEnable"/>
     </comp>
@@ -515,7 +515,7 @@
     </comp>
     <comp lib="0" loc="(330,660)" name="Pin">
       <a name="appearance" val="NewPins"/>
-      <a name="label" val="PXN_sel"/>
+      <a name="label" val="Rsel_source"/>
       <a name="width" val="2"/>
     </comp>
     <comp lib="0" loc="(330,90)" name="Pin">
@@ -1178,7 +1178,7 @@
     <wire from="(3180,310)" to="(3300,310)"/>
     <wire from="(3190,320)" to="(3190,520)"/>
     <wire from="(3190,320)" to="(3300,320)"/>
-    <wire from="(320,230)" to="(370,230)"/>
+    <wire from="(320,230)" to="(330,230)"/>
     <wire from="(3200,330)" to="(3200,550)"/>
     <wire from="(3200,330)" to="(3300,330)"/>
     <wire from="(3210,340)" to="(3210,580)"/>
@@ -1189,6 +1189,7 @@
     <wire from="(3230,360)" to="(3300,360)"/>
     <wire from="(3240,370)" to="(3240,670)"/>
     <wire from="(3240,370)" to="(3300,370)"/>
+    <wire from="(330,230)" to="(370,230)"/>
     <wire from="(330,50)" to="(380,50)"/>
     <wire from="(330,660)" to="(390,660)"/>
     <wire from="(330,90)" to="(380,90)"/>
